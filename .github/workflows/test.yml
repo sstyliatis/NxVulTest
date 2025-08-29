@@ -1,14 +1,32 @@
-name: PR Title Injection POC
+name: PR Title Injection Demo
 
 on:
   pull_request:
+    types: [opened, edited, reopened]
+  pull_request_target:
     types: [opened, edited, reopened]
 
 jobs:
   poc:
     runs-on: ubuntu-latest
     steps:
-      - name: Show PR title execution
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create PR message file (safe)
         run: |
-          echo "Running POC..."
-          echo "PR title is: ${{ github.event.pull_request.title }}"
+          mkdir -p /tmp
+          cat > /tmp/pr-message.txt << 'EOF'
+          ${{ github.event.pull_request.title }}
+          
+          ${{ github.event.pull_request.body }}
+          EOF
+
+      - name: Show PR title inline (unsafe)
+        run: |
+          echo "PR title: ${{ github.event.pull_request.title }}"
+
+      - name: Show PR message file contents (safe)
+        run: |
+          echo "Contents of /tmp/pr-message.txt:"
+          cat /tmp/pr-message.txt
