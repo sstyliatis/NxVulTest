@@ -1,0 +1,14 @@
+name: PR Title Injection POC
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+jobs:
+  poc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show PR title execution
+        run: |
+          echo "Running POC..."
+          echo "PR title is: ${{ github.event.pull_request.title }}"
